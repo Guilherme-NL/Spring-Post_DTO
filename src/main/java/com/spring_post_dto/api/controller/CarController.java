@@ -14,40 +14,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spring_post_dto.api.DTO.CarDTO;
 import com.spring_post_dto.api.model.Car;
-import com.spring_post_dto.api.repository.CarRepository;
+import com.spring_post_dto.api.service.CarService;
 
 @RestController
 @RequestMapping("/")
 public class CarController {
 
     @Autowired
-    private CarRepository repository;
+    private CarService service;
 
     @GetMapping
     public List<Car> listAll() {
-        return repository.findAll();
+        return service.findAll();
     }
 
     @PostMapping
     public void creatCar(@RequestBody CarDTO req) {
-        repository.save(new Car(req));
+        service.save(req);
     }
     
     @DeleteMapping("/{id}")
     public void deleteCar(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteById(id);
     }
 
     @PutMapping("/{id}")
     public void updateCar(@PathVariable Long id, @RequestBody CarDTO req) {
-        repository.findById(id).map(car -> {
-            car.setAnoModlo(req.anoModlo());
-            car.setDataFabricacao(req.dataFabricacao());
-            car.setFabricante(req.fabricante());
-            car.setModelo(req.modelo());
-            car.setValor(req.valor());
-
-            return repository.save(car);
-        });
+        service.update(id, req);
     }
 }
